@@ -98,7 +98,6 @@ export default function MyNFTsView() {
     let res;
     let done;
     let approved = await getApproved(account, contractAddress, provider, item.id);
-    // console.log('is approved?',approved)
     if(!approved){
       done = await approveContract(item.id);
     } else {
@@ -157,10 +156,13 @@ export default function MyNFTsView() {
   },[account]);
 
   useEffect(async () => {
-    if(account && nftItems){
+    if(account){
       let userOffers;
       let fetchOffers = await getUserOffers();
-      let openSeaAssetsAddresses = nftItems.map(x=>{return x.id});
+      let openSeaAssetsAddresses=[];
+      if(nftItems){
+        openSeaAssetsAddresses = nftItems.map(x=>{return x.id});
+      }
       if(fetchOffers){
         let offersMade = fetchOffers.users[0].offersMade.filter(x=> {return !openSeaAssetsAddresses.includes(x.fraktal.id) && (x.fraktal.status == "open" || x.fraktal.status == "sold")})
         if(offersMade && offersMade.length){
